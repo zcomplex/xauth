@@ -1,14 +1,25 @@
+import sbt.io.Path.relativeTo
+
 import java.text.SimpleDateFormat
 
-name := "x-auth"
+name := "xauth-api"
 organization := "io.xauth"
-organizationName := "X-Auth"
+organizationName := "XAuth"
 maintainer := "Enrico Russo <enrico.russo.84@gmail.com>"
 
-version := "2.1.0"
+version := "2.1.3"
 
 lazy val root = (project in file("."))
   .enablePlugins(PlayScala)
+  .settings(
+    Universal / mappings ++= {
+      val publicDir = baseDirectory.value / "public"
+      if (publicDir.exists())
+        (publicDir ** "*").pair(relativeTo(baseDirectory.value))
+      else
+        Seq()
+    }
+  )
 
 scalaVersion := "2.12.6"
 

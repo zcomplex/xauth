@@ -40,10 +40,10 @@ RUN apk add coreutils openssl perl
 #RUN apk del curl coreutils openssl perl
 
 # Creating user
-RUN addgroup -S xauth; \
-    adduser -Ss /bin/bash -h /home/xauth -G xauth xauth
+RUN addgroup -S $APP_NAME; \
+    adduser -Ss /bin/bash -h /home/$APP_NAME -G $APP_NAME $APP_NAME
 
-WORKDIR /home/xauth
+WORKDIR /home/$APP_NAME
 
 # .xauth/
 #    conf/
@@ -61,15 +61,14 @@ RUN unzip $APP_ARCHIVE
 RUN mv $APP_NAME-$APP_VERSION $APP_NAME
 RUN rm $APP_ARCHIVE
 
-RUN chown xauth:xauth *
+RUN chown -R $APP_NAME:$APP_NAME *
 
-ENV CNF_DIRECTORY="/home/xauth/.$APP_NAME"
-ENV APP_DIRECTORY="/home/xauth/$APP_NAME"
+ENV CNF_DIRECTORY="/home/$APP_NAME/.$APP_NAME"
+ENV APP_DIRECTORY="/home/$APP_NAME/$APP_NAME"
 
 # Importing certificates
 WORKDIR $APP_DIRECTORY
 
 # Launching service
 CMD $APP_DIRECTORY/bin/$APP_NAME \
-    -Dconfig.file=$CNF_DIRECTORY/conf/application-$ENVIRONMENT.conf \
-    -Dplay.http.secret.key=$APP_SECRET
+    -Dconfig.file=$CNF_DIRECTORY/conf/application-$ENVIRONMENT.conf
